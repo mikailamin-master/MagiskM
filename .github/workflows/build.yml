@@ -1,0 +1,97 @@
+name: Build MagiskM
+
+on:
+    push:
+        branches: [ main, master ]
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    build-native:
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            max-parallel: 1
+            matrix:
+                build_type: [release, debug]
+
+        env:
+            ANDROID_HOME: ${{ github.workspace }}/android-sdk
+            ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk }
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  submodules: recursive
+                  fetch-depth: 1
+                  submodule-depth: 1
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.10"
+
+            - name: Install dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y --no-install-recommends \
+                      curl \
+                      xz-utils \
+                      build-essential \
+                      pkg-config
+
+            - name: Prepare Android SDK directory
+              run: mkdir -p "$ANDROID_HOME"
+
+            - name: Enable incremental compilation
+              run: echo "CARGO_INCREMENTAL=1" >> $GITHUB_ENV
+
+            - name: Cache ONDK
+              id: cache-ondk
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ${{ env.ANDROID_HOME }}/ndk/magisk
+                      ${{ env.ANDROID_HOME }}/ndk/ondk-r29.5
+                  key: ondk-r29.4-${{ runner.os }}
+
+            - name: Setup ONDK
+              if: steps.cache-ondk.outputs.cache-hit != 'true'
+              run: python3 build.py -v ndk
+
+            - name: Cache Cargo
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.cargo/registry
+                      ~/.cargo/git
+                      native/target
+                  key: cargo-${{ runner.os }}-${{ matrix.build_type }}-${{ hashFiles('**/Cargo.lock') }}
+                  restore-keys: |
+                      cargo-${{ runner.os }}-${{ matrix.build_type }}-
+                      cargo-${{ runner.os }}-
+
+            - name: Build native (${{ matrix.build_type }})
+              run: |
+                  if [ "${{ matrix.build_type }}" = "release" ]; then
+                      python3 build.py -vr native
+                  else
+                      python3 build.py -v native
+                  fi
+              env:
+                  ANDROID_HOME: ${{ env.ANDROID_HOME }}
+                  ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/magisk
+
+            - name: Upload native (${{ matrix.build_type }})
+              uses: actions/upload-artifact@v4
+              with:
+                  name: native_${{ matrix.build_type }}
+                  path: |
+                      native/out/arm64-v8a
+                      native/out/armeabi-v7a
+                      native/out/x86
+                      native/out/x86_64
+                  retention-days: 30
+                  compression-level: 3
