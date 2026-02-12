@@ -4,9 +4,13 @@
     <style name="Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorControlHighlight">@color/colorControlHighlight</item>
+        <item name="colorControlNormal">@color/colorControlNormal</item>
     </style>
     
-    <style name="Theme.RequestActivity" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.RequestActivity" parent="@style/Theme.App">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">#66000000</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -14,4 +18,11 @@
         <item name="android:fitsSystemWindows">false</item>
     </style>
 
+    <style name="Widget.App.Slider" parent="Widget.Material3.Slider">
+        <item name="trackColor">@color/colorSecondary</item>
+        <item name="thumbColor">@color/colorPrimary</item>
+        <item name="tickColor">@color/colorPrimary</item>
+        <item name="tickColorActive">@color/colorPrimary</item>
+        <item name="tickColorInactive">@color/colorPrimary</item>
+    </style>
 </resources>

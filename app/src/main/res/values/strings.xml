@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Magisk</string>
+    <string name="main_activity_title">Welcome To Magisk</string>
+    <string name="zygisk">Zygisk</string>
+    <string name="req_activity_notify_hint">Notify as toast when use su!</string>
+    <string name="req_activity_su_warn">This access can do anything to your device! Be careful!</string>
+    <string name="req_activity_allow">Accect this request!</string>
+    <string name="req_activity_deny">Reject this request!</string>
 </resources>

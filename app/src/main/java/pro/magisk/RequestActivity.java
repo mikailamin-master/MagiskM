@@ -2,6 +2,7 @@ package pro.magisk;
 
 import android.os.Bundle;
 import android.view.View;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import java.io.DataOutputStream;
 import android.os.Build;
@@ -9,6 +10,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import pro.magisk.databinding.ActivityRequestBinding;
+import com.google.android.material.slider.LabelFormatter;
+import com.google.android.material.slider.Slider;
 
 public class RequestActivity extends AppCompatActivity {
 
@@ -55,6 +58,19 @@ public class RequestActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 finish();
+            }
+        });
+        binding.untilSlider.setLabelFormatter(new LabelFormatter() {
+            @NonNull
+            @Override
+            public String getFormattedValue(float value) {
+                if ((int) value == -1) {
+                    return "Allow for only this proccess!";
+                } else if ((int) value == 0) {
+                    return "Allow for forever!";
+                }else {
+                    return "Allow for: (" + String.valueOf((int) value) + ") minute";
+                }
             }
         });
     }

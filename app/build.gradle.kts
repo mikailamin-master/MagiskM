@@ -50,4 +50,7 @@ android {
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation(files("libs/core-6.0.0.aar"))
+    implementation(files("libs/service-6.0.0.aar"))
+    implementation(files("libs/nio-6.0.0.aar"))
 }

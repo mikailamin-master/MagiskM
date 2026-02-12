@@ -1,21 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorSurface">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorSurface">
 
     <LinearLayout
-        android:layout_height="160dp"
-        android:layout_width="match_parent"
-        android:background="@color/colorSurfaceVariant">
+            android:layout_height="160dp"
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:gravity="bottom">
+        <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="32sp"
+                android:textColor="@color/colorOnPrimary"
+                android:text="@string/main_activity_title"
+                android:layout_marginStart="30dp"
+                android:layout_marginBottom="4dp"/>
     </LinearLayout>
-    <Button
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Install Magisk"
-        android:id="@+id/install" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/main_version_card"
+            android:padding="28dp"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/app_name" />
+        <TextView
+                android:id="@+id/version_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+                android:textColor="@color/colorOnSurfaceVariant"
+                tools:text="Version: master:MAGISK:R" />
+        <TextView
+                android:id="@+id/version_code_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+                android:textColor="@color/colorOnSurfaceVariant"
+                tools:text="Version Code: 55555" />
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/main_version_card"
+            android:padding="28dp"
+            android:orientation="vertical"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/zygisk" />
+        <TextView
+                android:id="@+id/zygisk_status_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+                android:textColor="@color/colorOnSurfaceVariant"
+                tools:text="Zygisk is disabled" />
+    </LinearLayout>
 
 </LinearLayout>

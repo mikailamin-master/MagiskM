@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="btn_corners">40dp</dimen>
+    <dimen name="btn_corners">36dp</dimen>
+    <dimen name="version_card_corners">28dp</dimen>
 </resources>

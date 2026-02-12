@@ -4,8 +4,9 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import pro.magisk.databinding.ActivityMainBinding;
-
 import pro.magisk.utils.*;
+
+import com.topjohnwu.superuser.Shell;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,17 +18,20 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        getWindow().setStatusBarColor(getResources().getColor(R.color.colorSurfaceVariant));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         getWindow().setNavigationBarColor(getResources().getColor(R.color.colorSurface));
 
-        binding.install.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new EnvFix().install(getApplicationContext());
-                android.widget.Toast.makeText(getApplicationContext(), "Env files are Copied", android.widget.Toast.LENGTH_SHORT).show();
-            }
-        });
+        binding.versionTxt.setText("Version: " + MagiskInfo.getMagiskVersion());
+        int ver_code = MagiskInfo.getMagiskVersionCode();
+        if (ver_code != -1) {
+            binding.versionCodeTxt.setText("Version code: " + ver_code);
+        } else {
+            binding.versionCodeTxt.setText("Version code: N/A");
+        }
+        if (MagiskInfo.getZygiskStatus()) {
+            binding.zygiskStatusTxt.setText("Zygisk is enabled");
+        } else {
+            binding.zygiskStatusTxt.setText("Zygisk is disabled");
+        }
     }
 }
