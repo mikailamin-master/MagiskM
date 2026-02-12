@@ -1,13 +1,22 @@
-name: android build
+name: Build MagiskM App
 
 on:
     push:
         branches: [ "app" ]
     pull_request:
+    workflow_dispatch:
 
 jobs:
-    build:
+    build-app:
         runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            matrix:
+                build_type: [debug, release]
+
+        env:
+            GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.caching=true -Dorg.gradle.configuration-cache=true
 
         steps:
             - name: checkout repo
@@ -18,6 +27,7 @@ jobs:
               with:
                   distribution: temurin
                   java-version: 17
+                  cache: gradle
 
             - name: setup android sdk
               uses: android-actions/setup-android@v3
@@ -25,11 +35,21 @@ jobs:
             - name: grant gradlew permission
               run: chmod +x gradlew
 
-            - name: build debug apk
-              run: ./gradlew assembleRelease
-              
+            - name: cache gradle files
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+
+            - name: build apk
+              run: ./gradlew assemble${{ matrix.build_type == 'release' && 'Release' || 'Debug' }}
+
             - name: upload apk
               uses: actions/upload-artifact@v4
               with:
-                  name: debug-apk
-                  path: app/build/outputs/apk/release/*.apk
+                  name: ${{ matrix.build_type }}-apk
+                  path: app/build/outputs/apk/${{ matrix.build_type }}/*.apk
