@@ -18,7 +18,7 @@ jobs:
 
         env:
             ANDROID_HOME: ${{ github.workspace }}/android-sdk
-            ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk }
+            ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
 
         steps:
             - name: Checkout repository
@@ -83,6 +83,23 @@ jobs:
               env:
                   ANDROID_HOME: ${{ env.ANDROID_HOME }}
                   ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/magisk
+
+            - name: Clean and rename native libraries
+              run: |
+                  for dir in native/out/*; do
+                      if [ -d "$dir" ]; then
+                          # remove all .a files
+                          find "$dir" -type f -name "*.a" -delete
+                          
+                          # rename files to lib*.so if needed
+                          for file in "$dir"/*; do
+                              filename=$(basename "$file")
+                              if [[ -f "$file" && ! "$filename" == lib*.so ]]; then
+                                  mv "$file" "$dir/lib${filename}.so"
+                              fi
+                          done
+                      fi
+                  done
 
             - name: Upload native (${{ matrix.build_type }})
               uses: actions/upload-artifact@v4
