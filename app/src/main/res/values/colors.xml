@@ -1,0 +1,20 @@
+<resources>
+    <color name="colorPrimary">#68A17F</color>
+    <color name="colorAccent">#68A17F</color>
+    <color name="colorPrimaryDark">#68A17F</color>
+    <color name="colorControlHighlight">#68A17F</color>
+    <color name="colorControlNormal">#68A17F</color>
+    <color name="colorPrimaryVariant">#8068A17F</color>
+    <color name="colorSecondary">#2F6D43</color>
+    <color name="colorSecondaryVariant">#802F6D43</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorSurfaceVariant">#EEEEEE</color>
+    <color name="colorSurfaceDim">#F2F2F2</color>
+    <color name="colorOnPrimary">#F9F9F9</color>
+    <color name="colorOnPrimaryVariant">#D9E6E6E6</color>
+    <color name="colorOnSurface">#444444</color>
+    <color name="colorOnSurfaceVariant">#BF444444</color>
+    <color name="colorDisabled">#808080</color>
+    <color name="colorDisabledVariant">#66808080</color>
+    <color name="colorError">#CC0047</color>
+</resources>

@@ -1,0 +1,35 @@
+name: android build
+
+on:
+    push:
+        branches: [ "main" ]
+    pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: checkout repo
+              uses: actions/checkout@v4
+
+            - name: setup jdk
+              uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: 17
+
+            - name: setup android sdk
+              uses: android-actions/setup-android@v3
+
+            - name: grant gradlew permission
+              run: chmod +x gradlew
+
+            - name: build debug apk
+              run: ./gradlew assembleRelease
+              
+            - name: upload apk
+              uses: actions/upload-artifact@v4
+              with:
+                  name: debug-apk
+                  path: app/build/outputs/apk/release/*.apk
