@@ -1,8 +1,8 @@
-name: Build MagiskM
+name: Build MagiskM Native
 
 on:
     push:
-        branches: [ main, master ]
+        branches: [ native ]
     pull_request:
     workflow_dispatch:
 

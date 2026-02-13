@@ -383,8 +383,8 @@ def set_build_abis(abis: set[str]):
     build_abis = {k: support_abis[k] for k in abis if k in support_abis}
 
 def load_config():
-    config["version"] = "master"
-    config["versionCode"] = 55555
+    config["version"] = "PREMIUM"
+    config["versionCode"] = 50000
     config["outdir"] = Path("out")
     set_build_abis(default_abis)
 
