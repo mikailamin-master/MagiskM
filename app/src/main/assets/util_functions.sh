@@ -2,8 +2,8 @@
 # Magisk General Utility Functions
 ############################################
 
-MAGISK_VER='master'
-MAGISK_VER_CODE=55555
+MAGISK_VER='PREMIUM'
+MAGISK_VER_CODE=50000
 
 ###################
 # Global Variables

@@ -12,8 +12,8 @@ android {
         applicationId = "pro.magisk"
         minSdk = 24
         targetSdk = 34
-        versionCode = 55555
-        versionName = "master"
+        versionCode = 50000
+        versionName = "PREMIUM"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
