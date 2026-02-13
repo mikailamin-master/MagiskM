@@ -1,6 +1,10 @@
 package pro.magisk;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.io.DataOutputStream;
@@ -16,6 +20,8 @@ public class RequestActivity extends AppCompatActivity {
 
     private ActivityRequestBinding binding;
     private String action;
+    private String app_pkg;
+    private String app_name;
     private int uid = -1;
     private int pid = -1;
     private File output;
@@ -31,16 +37,48 @@ public class RequestActivity extends AppCompatActivity {
         }
         if (!getIntent().hasExtra("action")) finishAndRemoveTask();
         if (!getIntent().hasExtra("action")) return;
-        if (Objects.equals(getIntent().getStringExtra("action"), "request")) {
+        action = getIntent().getStringExtra("action");
+        assert action != null;
+        if (action.equals("request")) {
             uid = getIntent().getIntExtra("uid", -1);
         } else {
             uid = getIntent().getIntExtra("from.uid", -1);
+            binding.getRoot().setVisibility(View.GONE);
+        }
+        PackageManager pm = getPackageManager();
+        String[] packages = pm.getPackagesForUid(uid);
+        if (packages != null && packages.length > 0) {
+            app_pkg = packages[0];
+            try {
+                ApplicationInfo app_info = pm.getApplicationInfo(app_pkg, 0);
+
+                app_name = pm.getApplicationLabel(app_info).toString();
+                Drawable app_icon = pm.getApplicationIcon(app_info);
+
+                binding.appNameTxt.setText(app_name);
+                binding.appPkgTxt.setText(app_pkg);
+                binding.appIconImg.setImageDrawable(app_icon);
+
+            } catch (PackageManager.NameNotFoundException e) {
+                binding.appNameTxt.setText("N/A");
+                binding.appPkgTxt.setText("N/A");
+                app_name = "N/A";
+            }
         }
         pid = getIntent().getIntExtra("pid", -1);
-        String fifoPath = getIntent().getStringExtra("fifo");
-        assert fifoPath != null;
-        output = new File(fifoPath);
-
+        if (action.equals("request")) {
+            String fifoPath = getIntent().getStringExtra("fifo");
+            assert fifoPath != null;
+            output = new File(fifoPath);
+        } else {
+            int policy = getIntent().getIntExtra("policy", -1);
+            if (policy == 2) {
+                Toast.makeText(getApplicationContext(), app_name + " " + getResources().getString(R.string.authorised) + "!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), app_name + " " + getResources().getString(R.string.rejected) + "!", Toast.LENGTH_SHORT).show();
+            }
+            finishAndRemoveTask();
+        }
         binding.allow.setOnClickListener(view -> write_response(2));
         binding.deny.setOnClickListener(view -> write_response(1));
         binding.untilSlider.setValue(0);

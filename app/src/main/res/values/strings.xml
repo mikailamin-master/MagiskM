@@ -10,4 +10,12 @@
     <string name="allow_only_for_this_process">Allow only for this process!</string>
     <string name="allow_for">Allow for</string>
     <string name="minute">minute</string>
+    <string name="app_icon">App icon</string>
+    <string name="requested_for_su">Requested for superuser!</string>
+    <string name="authorised">Authorised</string>
+    <string name="rejected">Rejected</string>
+    <string name="installed">Installed</string>
+    <string name="ramdisk">Ramdisk</string>
+    <string name="zygisk_is_enabled">Zygisk is enabled</string>
+    <string name="zygisk_is_disabled">Zygisk is disabled</string>
 </resources>

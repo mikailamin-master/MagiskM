@@ -21,17 +21,16 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         getWindow().setNavigationBarColor(getResources().getColor(R.color.colorSurface));
 
-        binding.versionTxt.setText("Installed: " + MagiskInfo.getMagiskVersion().toUpperCase());
+        binding.versionTxt.setText(getResources().getString(R.string.installed) + ": " + MagiskInfo.getMagiskVersion().toUpperCase());
         int ver_code = MagiskInfo.getMagiskVersionCode();
-        if (ver_code != -1) {
-            binding.versionCodeTxt.setText("Version code: " + ver_code);
-        } else {
-            binding.versionCodeTxt.setText("Version code: N/A");
-        }
+        Shell.Result result = Shell.cmd("grep -q skip_initramfs /proc/cmdline && echo false || echo true").exec();
+
+        String ramdisk = result.getOut().isEmpty() ? "unknown" : result.getOut().get(0);
+        binding.ramdiskTxt.setText(getResources().getString(R.string.ramdisk) + ": " + ramdisk);
         if (MagiskInfo.getZygiskStatus()) {
-            binding.zygiskStatusTxt.setText("Zygisk is enabled");
+            binding.zygiskStatusTxt.setText(getResources().getString(R.string.zygisk_is_enabled));
         } else {
-            binding.zygiskStatusTxt.setText("Zygisk is disabled");
+            binding.zygiskStatusTxt.setText(getResources().getString(R.string.zygisk_is_disabled));
         }
     }
 }
