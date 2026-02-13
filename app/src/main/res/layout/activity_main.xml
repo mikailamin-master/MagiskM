@@ -79,5 +79,10 @@
                 android:textColor="@color/colorOnSurfaceVariant"
                 tools:text="Zygisk is disabled" />
     </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Install"
+        android:id="@+id/install"/>
 
 </LinearLayout>

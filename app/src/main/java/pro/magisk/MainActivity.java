@@ -32,5 +32,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             binding.zygiskStatusTxt.setText(getResources().getString(R.string.zygisk_is_disabled));
         }
+        binding.install.setOnClickListener(view -> EnvFix.install(getApplicationContext()));
     }
 }
