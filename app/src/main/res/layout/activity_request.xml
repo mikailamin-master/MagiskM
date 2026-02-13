@@ -18,25 +18,29 @@
             android:background="@color/colorSurface"
             android:orientation="vertical"
             android:gravity="bottom">
+        <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/noti_switch"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="@string/req_activity_notify_hint"
+                android:checked="true"
+                android:enabled="false"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                tools:enabled="false" />
         <com.google.android.material.slider.Slider
                 android:id="@+id/until_slider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                style="@style/Widget.App.Slider"
+                style="@style/Widget.Material3.Slider"
                 android:contentDescription="@string/app_name"
                 app:tickVisible="true"
                 android:valueFrom="-1.0"
                 android:value="0.0"
                 android:valueTo="60.0"
                 android:stepSize="1.0"/>
-        <com.google.android.material.materialswitch.MaterialSwitch
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="@string/req_activity_notify_hint"
-                android:paddingStart="30dp"
-                android:paddingEnd="30dp"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

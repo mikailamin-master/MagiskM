@@ -8,4 +8,6 @@
     <string name="req_activity_deny">Reject this request!</string>
     <string name="allow_for_forever">Allow for always!</string>
     <string name="allow_only_for_this_process">Allow only for this process!</string>
+    <string name="allow_for">Allow for</string>
+    <string name="minute">minute</string>
 </resources>
