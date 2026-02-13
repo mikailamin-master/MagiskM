@@ -65,11 +65,11 @@ public class RequestActivity extends AppCompatActivity {
             @Override
             public String getFormattedValue(float value) {
                 if ((int) value == -1) {
-                    return "Allow for only this proccess!";
+                    return " " + getResources().getString(R.string.allow_only_for_this_process) + " ";
                 } else if ((int) value == 0) {
-                    return "Allow for forever!";
+                    return " " + getResources().getString(R.string.allow_for_forever) + " ";
                 }else {
-                    return "Allow for: (" + String.valueOf((int) value) + ") minute";
+                    return " Allow for: (" + String.valueOf((int) value) + ") minute ";
                 }
             }
         });

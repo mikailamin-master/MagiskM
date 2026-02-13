@@ -6,4 +6,6 @@
     <string name="req_activity_su_warn">This access can do anything to your device! Be careful!</string>
     <string name="req_activity_allow">Accect this request!</string>
     <string name="req_activity_deny">Reject this request!</string>
+    <string name="allow_for_forever">Allow for always!</string>
+    <string name="allow_only_for_this_process">Allow only for this process!</string>
 </resources>

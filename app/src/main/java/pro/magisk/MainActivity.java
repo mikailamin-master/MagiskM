@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         getWindow().setNavigationBarColor(getResources().getColor(R.color.colorSurface));
 
-        binding.versionTxt.setText("Version: " + MagiskInfo.getMagiskVersion());
+        binding.versionTxt.setText("Installed: " + MagiskInfo.getMagiskVersion().toUpperCase());
         int ver_code = MagiskInfo.getMagiskVersionCode();
         if (ver_code != -1) {
             binding.versionCodeTxt.setText("Version code: " + ver_code);
