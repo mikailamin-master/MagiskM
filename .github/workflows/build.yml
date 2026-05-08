@@ -1,0 +1,155 @@
+name: Build MagiskM Native
+
+on:
+    push:
+        branches: [ native, native_test ]
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    build-native:
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            matrix:
+                build_type: [debug]
+
+        env:
+            ANDROID_HOME: ${{ github.workspace }}/android-sdk
+            ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  submodules: recursive
+                  fetch-depth: 1
+
+            - name: Shallow submodules
+              run: git submodule update --init --recursive --depth 1
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.10"
+
+            - name: Install dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y --no-install-recommends \
+                      curl \
+                      xz-utils \
+                      zip \
+                      build-essential \
+                      pkg-config
+
+            - name: Prepare Android SDK directory
+              run: mkdir -p "$ANDROID_HOME"
+
+            - name: Enable incremental compilation
+              run: echo "CARGO_INCREMENTAL=1" >> $GITHUB_ENV
+
+            - name: Cache ONDK
+              id: cache-ondk
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ${{ env.ANDROID_HOME }}/ndk/magisk
+                      ${{ env.ANDROID_HOME }}/ndk/ondk-r29.5
+                  key: ondk-r29.5-${{ runner.os }}
+
+            - name: Setup ONDK
+              if: steps.cache-ondk.outputs.cache-hit != 'true'
+              run: python3 build.py -v ndk
+
+            - name: Cache Cargo
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.cargo/registry
+                      ~/.cargo/git
+                      native/target
+                  key: cargo-${{ runner.os }}-${{ matrix.build_type }}-${{ hashFiles('**/Cargo.lock') }}
+                  restore-keys: |
+                      cargo-${{ runner.os }}-${{ matrix.build_type }}-
+                      cargo-${{ runner.os }}-
+
+            - name: Build native (${{ matrix.build_type }})
+              run: |
+                  if [ "${{ matrix.build_type }}" = "release" ]; then
+                      python3 build.py -vr native
+                  else
+                      python3 build.py -v native
+                  fi
+              env:
+                  ANDROID_HOME: ${{ env.ANDROID_HOME }}
+                  ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/magisk
+
+            - name: Clean and rename native libraries
+              run: |
+                  for dir in native/out/*; do
+                      if [ -d "$dir" ]; then
+                          find "$dir" -type f -name "*.a" -delete
+
+                          for file in "$dir"/*; do
+                              filename=$(basename "$file")
+
+                              if [[ -f "$file" && ! "$filename" == lib*.so ]]; then
+                                  mv "$file" "$dir/lib${filename}.so"
+                              fi
+                          done
+                      fi
+                  done
+
+            - name: Create native zip
+              run: |
+                  cd native/out
+
+                  zip_name="native_${{ matrix.build_type }}.zip"
+
+                  zip -r "../../$zip_name" \
+                      arm64-v8a \
+                      armeabi-v7a \
+                      x86 \
+                      x86_64
+
+                  echo "ZIP_NAME=$zip_name" >> $GITHUB_ENV
+
+            - name: Upload native (${{ matrix.build_type }})
+              uses: actions/upload-artifact@v4
+              with:
+                  name: native_${{ matrix.build_type }}
+                  path: ${{ env.ZIP_NAME }}
+                  compression-level: 0
+
+            - name: Create GitHub Release
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  if [ "${{ matrix.build_type }}" = "release" ]; then
+                      tag="native_r"
+                  else
+                      tag="native_d"
+                  fi
+
+                  commit=$(git rev-parse --short HEAD)
+                  branch=${GITHUB_REF#refs/heads/}
+                  build_time=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+                  body=$(printf "MagiskM Native Build\n\nBranch: %s\nCommit: %s\nBuild type: %s\nBuild time: %s\n" \
+                      "$branch" \
+                      "$commit" \
+                      "${{ matrix.build_type }}" \
+                      "$build_time")
+
+                  gh release delete "$tag" -y || true
+                  git tag -d "$tag" || true
+                  git push origin :refs/tags/$tag || true
+
+                  git tag "$tag"
+                  git push origin "$tag"
+
+                  gh release create "$tag" "${{ env.ZIP_NAME }}" \
+                      --title "MagiskM Native" \
+                      --notes "$body"
