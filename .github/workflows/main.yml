@@ -1,0 +1,85 @@
+name: Build
+
+on:
+    push:
+        branches: [ main, app ]
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        permissions: write-all
+
+        strategy:
+            matrix:
+                build_type: [debug]
+
+        steps:
+            - name: checkout repo
+              uses: actions/checkout@v4
+
+            - name: setup jdk
+              uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: 17
+
+            - name: setup android sdk
+              uses: android-actions/setup-android@v3
+
+            - name: grant gradlew permission
+              run: chmod +x gradlew
+
+            - name: build apk
+              run: |
+                  if [ "${{ matrix.build_type }}" = "debug" ]; then
+                      ./gradlew assembleDebug
+                  else
+                      ./gradlew assembleRelease
+                  fi
+
+            - name: set apk path
+              id: apk
+              run: |
+                  if [ "${{ matrix.build_type }}" = "debug" ]; then
+                      echo "path=app/build/outputs/apk/debug/*.apk" >> $GITHUB_OUTPUT
+                      echo "tag=app-debug" >> $GITHUB_OUTPUT
+                  else
+                      echo "path=app/build/outputs/apk/release/*.apk" >> $GITHUB_OUTPUT
+                      echo "tag=app-release" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: upload artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: app-${{ matrix.build_type }}
+                  path: ${{ steps.apk.outputs.path }}
+
+            - name: create github release
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  tag="${{ steps.apk.outputs.tag }}"
+
+                  commit=$(git rev-parse --short HEAD)
+                  branch=${GITHUB_REF#refs/heads/}
+                  build_time=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+                  body=$(printf "Branch: %s\nCommit: %s\nBuild type: %s\nBuild time: %s\n" \
+                      "$branch" \
+                      "$commit" \
+                      "${{ matrix.build_type }}" \
+                      "$build_time")
+
+                  gh release delete "$tag" -y || true
+                  git tag -d "$tag" || true
+                  git push origin :refs/tags/$tag || true
+
+                  git tag "$tag"
+                  git push origin "$tag"
+
+                  gh release create "$tag" \
+                      ${{ steps.apk.outputs.path }} \
+                      --title "Build - ${{ matrix.build_type }}" \
+                      --notes "$body"
