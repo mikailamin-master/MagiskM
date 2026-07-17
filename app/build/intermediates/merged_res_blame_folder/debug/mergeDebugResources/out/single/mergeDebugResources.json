@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "pro.magisk.app-debug-31:/layout_activity_main.xml.flat",
+        "source": "pro.magisk.app-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/data/data/com.termux/files/home/.gradle/daemon/8.13/pro.magisk.app-debug-31:/layout_activity_main.xml.flat",
+        "source": "/data/data/com.termux/files/home/.gradle/daemon/8.13/pro.magisk.app-main-33:/layout/activity_main.xml"
+    }
+]

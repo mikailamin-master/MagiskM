@@ -1,0 +1,19 @@
+<lint-module
+    format="1"
+    dir="/data/data/com.termux/files/home/test/app"
+    name=":app"
+    type="APP"
+    maven="MagiskM:app:unspecified"
+    agpVersion="8.13.2"
+    buildFolder="build"
+    bootClassPath="/data/data/com.termux/files/home/android-sdk/platforms/android-34/android.jar:/data/data/com.termux/files/home/android-sdk/build-tools/35.0.0/core-lambda-stubs.jar"
+    javaSourceLevel="11"
+    compileTarget="android-34"
+    neverShrinking="true">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>
